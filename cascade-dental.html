@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cascade Dental Studio — Book your visit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F3EC;
+    --surface:#FFFFFF;
+    --ink:#16302C;
+    --ink-soft:#4A615C;
+    --teal:#1F6F63;
+    --teal-deep:#123A34;
+    --seafoam:#BFE3D9;
+    --seafoam-deep:#8FCABB;
+    --blush:#E7B9AA;
+    --line:#DCD5C7;
+    --radius:18px;
+    --shadow: 0 12px 30px -14px rgba(18,58,52,.28);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.font-display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace; letter-spacing:.02em;}
+  p{margin:0; color:var(--ink-soft); line-height:1.6;}
+  a{color:inherit;}
+  img,svg{display:block;}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 28px;}
+  button{font-family:inherit; cursor:pointer;}
+  :focus-visible{outline:2.5px solid var(--teal); outline-offset:3px;}
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,243,236,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-row{display:flex; align-items:center; justify-content:space-between; padding:16px 28px;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+  .brand-word{font-family:'Fraunces', serif; font-size:19px; font-weight:600;}
+  .nav-links{display:flex; align-items:center; gap:30px; list-style:none; margin:0; padding:0;}
+  .nav-links a{text-decoration:none; font-size:14.5px; font-weight:500; color:var(--ink-soft);}
+  .nav-links a:hover{color:var(--teal-deep);}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    border-radius:999px; border:none; padding:12px 22px;
+    font-size:14.5px; font-weight:600; text-decoration:none;
+  }
+  .btn-primary{background:var(--teal-deep); color:#F6F3EC;}
+  .btn-primary:hover{background:var(--teal);}
+  .btn-ghost{background:transparent; border:1.5px solid var(--ink); color:var(--ink); padding:10.5px 20px;}
+  .btn-ghost:hover{background:var(--ink); color:var(--bg);}
+  .menu-toggle{display:none; background:none; border:none;}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:76px 0 60px;}
+  .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal-deep); margin-bottom:18px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--blush);}
+  .hero h1{font-size:clamp(36px,4.6vw,58px); line-height:1.04;}
+  .hero h1 em{font-style:normal; color:var(--teal);}
+  .hero p.lead{font-size:17.5px; max-width:460px; margin-top:20px;}
+  .hero-cta{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .trust-row{display:flex; gap:34px; margin-top:44px; flex-wrap:wrap;}
+  .trust-item .num{font-family:'Fraunces',serif; font-size:26px; font-weight:600; color:var(--teal-deep);}
+  .trust-item .lbl{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+
+  .hero-art{position:relative;}
+  .hero-art svg{width:100%; height:auto;}
+  .float-card{
+    position:absolute; background:var(--surface); border-radius:14px;
+    box-shadow:var(--shadow); padding:12px 16px; display:flex; align-items:center; gap:10px;
+    border:1px solid var(--line);
+  }
+  .float-card .dot{width:8px;height:8px;border-radius:50%;background:var(--teal);}
+  .float-card .ttl{font-size:12px; color:var(--ink-soft);}
+  .float-card .val{font-size:13.5px; font-weight:600;}
+  .fc-1{top:6%; left:-6%;}
+  .fc-2{bottom:10%; right:-4%;}
+
+  /* ---------- Services ---------- */
+  section{padding:78px 0;}
+  .section-head{max-width:560px; margin-bottom:44px;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:clamp(28px,3.2vw,38px);}
+  .services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .svc-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px 24px; transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .svc-card:hover{transform:translateY(-4px); box-shadow:var(--shadow);}
+  .svc-icon{width:44px; height:44px; border-radius:12px; background:var(--seafoam); display:flex; align-items:center; justify-content:center; margin-bottom:18px;}
+  .svc-icon svg{width:24px; height:24px; stroke:var(--teal-deep);}
+  .svc-card h3{font-size:18.5px; margin-bottom:8px;}
+  .svc-card p{font-size:14.5px;}
+  .svc-meta{display:flex; justify-content:space-between; align-items:center; margin-top:18px; padding-top:16px; border-top:1px dashed var(--line);}
+  .svc-meta .mono{font-size:12.5px; color:var(--ink-soft);}
+  .svc-meta button{background:none; border:none; color:var(--teal-deep); font-weight:600; font-size:13px; display:flex; align-items:center; gap:4px;}
+
+  /* ---------- How it works ---------- */
+  .how{background:var(--teal-deep); color:#EFF6F3; border-radius:28px; margin:0 28px;}
+  .how .wrap{max-width:1084px; padding:64px 28px;}
+  .how .section-head p{color:#BFDAD3;}
+  .how .section-head h2{color:#F6F3EC;}
+  .how-steps{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; margin-top:10px;}
+  .how-step .idx{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--seafoam-deep); margin-bottom:14px;}
+  .how-step h3{color:#F6F3EC; font-size:19px; margin-bottom:8px;}
+  .how-step p{color:#BFDAD3; font-size:14.5px;}
+
+  /* ---------- Booking ---------- */
+  .booking{background:var(--surface); border:1px solid var(--line); border-radius:28px; margin:78px 28px; padding:0; overflow:hidden; box-shadow:var(--shadow);}
+  .booking-inner{padding:52px 48px 48px;}
+  .book-steps-nav{display:flex; gap:0; margin-bottom:38px; border-bottom:1px solid var(--line);}
+  .bstep{flex:1; text-align:left; background:none; border:none; padding:0 0 16px; position:relative; color:var(--ink-soft);}
+  .bstep .n{font-family:'IBM Plex Mono',monospace; font-size:12px; display:block; margin-bottom:6px;}
+  .bstep .t{font-size:13.5px; font-weight:600;}
+  .bstep::after{content:""; position:absolute; left:0; right:10px; bottom:-1px; height:2.5px; background:transparent; border-radius:2px;}
+  .bstep.active{color:var(--teal-deep);}
+  .bstep.active::after{background:var(--teal);}
+  .bstep.done{color:var(--ink);}
+  .bstep.done::after{background:var(--seafoam-deep);}
+
+  .bpanel{display:none;}
+  .bpanel.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .pick-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px;}
+  .pick-card{
+    border:1.5px solid var(--line); border-radius:14px; padding:18px; text-align:left; background:var(--bg);
+  }
+  .pick-card h4{font-size:15px; margin-bottom:4px;}
+  .pick-card p{font-size:12.5px;}
+  .pick-card.selected{border-color:var(--teal); background:#EEF7F4; box-shadow:0 0 0 3px rgba(31,111,99,.12) inset;}
+
+  .dentist-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .dent-card{border:1.5px solid var(--line); border-radius:14px; padding:16px; text-align:center; background:var(--bg);}
+  .dent-avatar{width:52px; height:52px; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-weight:600; color:#fff; font-size:16px;}
+  .dent-card h4{font-size:13.5px; margin-bottom:2px;}
+  .dent-card p{font-size:11.5px;}
+  .dent-card.selected{border-color:var(--teal); background:#EEF7F4;}
+
+  .date-strip{display:flex; gap:10px; overflow-x:auto; padding-bottom:8px;}
+  .date-chip{flex:0 0 66px; border:1.5px solid var(--line); border-radius:14px; padding:12px 6px; text-align:center; background:var(--bg);}
+  .date-chip .dow{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
+  .date-chip .dnum{font-family:'Fraunces',serif; font-size:20px; font-weight:600; margin:4px 0;}
+  .date-chip .mon{font-size:10.5px; color:var(--ink-soft);}
+  .date-chip.selected{border-color:var(--teal); background:var(--teal-deep);}
+  .date-chip.selected *{color:#F6F3EC !important;}
+
+  .time-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:20px;}
+  .time-chip{border:1.5px solid var(--line); border-radius:10px; padding:10px 4px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:12.5px; background:var(--bg);}
+  .time-chip.selected{border-color:var(--teal); background:var(--teal); color:#fff;}
+  .time-chip[disabled]{opacity:.35; text-decoration:line-through; cursor:not-allowed;}
+
+  .field-group{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin-bottom:7px;}
+  .field input, .field textarea{
+    width:100%; border:1.5px solid var(--line); border-radius:10px; padding:12px 14px;
+    font-family:inherit; font-size:14.5px; background:var(--bg); color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:80px;}
+
+  .review-card{background:var(--bg); border:1.5px dashed var(--line); border-radius:16px; padding:22px 24px;}
+  .review-row{display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .review-row:last-child{border-bottom:none;}
+  .review-row .k{color:var(--ink-soft);}
+  .review-row .v{font-weight:600;}
+
+  .book-actions{display:flex; justify-content:space-between; margin-top:34px;}
+
+  .confirm-wrap{text-align:center; padding:20px 0 6px;}
+  .ticket{
+    max-width:420px; margin:24px auto 0; background:var(--teal-deep); color:#F6F3EC;
+    border-radius:18px; padding:28px 26px; position:relative; text-align:left;
+  }
+  .ticket .ref{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--seafoam-deep); letter-spacing:.06em;}
+  .ticket h3{color:#fff; font-size:22px; margin:6px 0 18px;}
+  .ticket .trow{display:flex; justify-content:space-between; font-size:13.5px; padding:7px 0; border-top:1px dashed rgba(246,243,236,.25);}
+  .ticket .trow .k{color:#BFDAD3;}
+
+  .my-appts{margin-top:46px;}
+  .my-appts h3{font-size:17px; margin-bottom:14px;}
+  .appt-row{display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px; background:var(--bg);}
+  .appt-row .left{display:flex; align-items:center; gap:14px;}
+  .appt-row .badge{font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--seafoam); color:var(--teal-deep); padding:4px 9px; border-radius:999px;}
+  .appt-row .info b{font-size:14px; display:block;}
+  .appt-row .info span{font-size:12px; color:var(--ink-soft);}
+  .appt-row .cancel{background:none; border:none; color:#B5544A; font-size:12.5px; font-weight:600;}
+  .empty-note{font-size:13.5px; color:var(--ink-soft); font-style:italic;}
+
+  /* ---------- Team ---------- */
+  .team-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  .team-card{text-align:center;}
+  .team-avatar{width:96px; height:96px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:28px; font-weight:600; color:#fff;}
+  .team-card h3{font-size:16.5px; margin-bottom:3px;}
+  .team-card .role{font-size:12.5px; color:var(--teal-deep); font-weight:600; margin-bottom:8px;}
+  .team-card p{font-size:13px;}
+
+  /* ---------- Testimonials ---------- */
+  .testi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .testi-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:26px;}
+  .stars{display:flex; gap:3px; margin-bottom:14px;}
+  .stars svg{width:15px; height:15px; fill:var(--blush);}
+  .testi-card p.quote{font-size:14.5px; color:var(--ink); font-style:italic;}
+  .testi-who{display:flex; align-items:center; gap:10px; margin-top:18px;}
+  .testi-avatar{width:34px; height:34px; border-radius:50%; background:var(--seafoam); display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700; color:var(--teal-deep);}
+  .testi-who b{font-size:13px; display:block;}
+  .testi-who span{font-size:11.5px; color:var(--ink-soft);}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+  .hours-table{width:100%; border-collapse:collapse; margin-top:18px;}
+  .hours-table td{padding:9px 0; font-size:14px; border-bottom:1px solid var(--line);}
+  .hours-table td:last-child{text-align:right; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft);}
+  .contact-list{list-style:none; padding:0; margin:18px 0 0; display:flex; flex-direction:column; gap:14px;}
+  .contact-list li{display:flex; align-items:center; gap:12px; font-size:14.5px;}
+  .contact-list svg{width:18px; height:18px; stroke:var(--teal-deep); flex-shrink:0;}
+  .map-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px; height:100%;}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--line); padding:40px 0; margin-top:20px;}
+  .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
+  .foot-row p{font-size:13px;}
+
+  @media (max-width:880px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-art{order:-1;}
+    .services-grid, .how-steps, .dentist-grid, .team-grid, .testi-grid{grid-template-columns:repeat(2,1fr);}
+    .contact-grid{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .field-group{grid-template-columns:1fr;}
+    .pick-grid{grid-template-columns:1fr 1fr;}
+    .time-grid{grid-template-columns:repeat(3,1fr);}
+    .booking-inner{padding:34px 22px;}
+    .book-steps-nav{overflow-x:auto;}
+  }
+  @media (max-width:520px){
+    .services-grid, .dentist-grid, .team-grid, .testi-grid, .how-steps{grid-template-columns:1fr;}
+    .pick-grid{grid-template-columns:1fr;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001s !important; transition-duration:.001s !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-row wrap" style="padding-left:0;padding-right:0;">
+    <a class="brand" href="#top">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <circle cx="15" cy="15" r="15" fill="#1F6F63"/>
+        <path d="M15 8c-2.4 0-3.7 1.4-4.9 1.4-1 0-1.6-.5-1.6 1.6 0 3.6 1.3 9 2.9 9 1.1 0 1.1-2.3 2.1-2.3.9 0 .9 2.3 2 2.3 1.6 0 3-5.4 3-9 0-2.1-.7-1.6-1.7-1.6C15.7 9.4 15 8 15 8z" fill="#F6F3EC"/>
+      </svg>
+      <span class="brand-word">Cascade Dental</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#book" class="btn btn-primary">Book appointment</a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Now booking · Chennai &amp; online consults</span>
+        <h1>Dental care that fits<br>into <em>your</em> week, not<br>the other way around.</h1>
+        <p class="lead">Cascade Dental Studio pairs unhurried, modern dentistry with a booking system that actually shows you real openings — no phone tag, no waiting for a callback.</p>
+        <div class="hero-cta">
+          <a href="#book" class="btn btn-primary">Book your visit</a>
+          <a href="#services" class="btn btn-ghost">See services</a>
+        </div>
+        <div class="trust-row">
+          <div class="trust-item"><div class="num">4.9</div><div class="lbl">Average rating</div></div>
+          <div class="trust-item"><div class="num">12k+</div><div class="lbl">Visits hosted</div></div>
+          <div class="trust-item"><div class="num">6 min</div><div class="lbl">Avg. booking time</div></div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 480 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="240" cy="230" r="200" fill="#BFE3D9"/>
+          <path d="M240 120c-34 0-52 20-70 20-14 0-23-7-23 22 0 51 19 128 41 128 16 0 16-33 30-33 13 0 13 33 29 33 23 0 43-77 43-128 0-29-10-22-24-22-18 0-26-20-26-20z" fill="#F6F3EC" stroke="#123A34" stroke-width="4" stroke-linejoin="round"/>
+          <path d="M240 150c-6 34-6 70 0 100" stroke="#8FCABB" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="120" cy="110" r="5" fill="#E7B9AA"/>
+          <circle cx="360" cy="90" r="4" fill="#123A34"/>
+          <circle cx="380" cy="330" r="6" fill="#E7B9AA"/>
+        </svg>
+        <div class="float-card fc-1">
+          <span class="dot"></span>
+          <div>
+            <div class="ttl">Next opening</div>
+            <div class="val">Today · 3:30 PM</div>
+          </div>
+        </div>
+        <div class="float-card fc-2">
+          <span class="dot" style="background:#E7B9AA"></span>
+          <div>
+            <div class="ttl">Cleaning + check-up</div>
+            <div class="val">45 min visit</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Everything short of a dental degree, still explained like you have one.</h2>
+      </div>
+      <div class="services-grid" id="servicesGrid"><!-- injected --></div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <div class="how">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow" style="color:#8FCABB;">Booking, simplified</span>
+        <h2>Three steps. No hold music.</h2>
+        <p>The same flow below is what runs the "Book appointment" button — this isn't a mockup.</p>
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <span class="idx">01 / pick</span>
+          <h3>Choose your visit</h3>
+          <p>Service, dentist, and a real time slot pulled from that day's schedule.</p>
+        </div>
+        <div class="how-step">
+          <span class="idx">02 / confirm</span>
+          <h3>Add your details</h3>
+          <p>Name and number — we'll text a reminder the morning of.</p>
+        </div>
+        <div class="how-step">
+          <span class="idx">03 / done</span>
+          <h3>Get your reference</h3>
+          <p>A ticket-style confirmation you can screenshot or save.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOKING WIDGET -->
+  <section id="book" style="padding-top:0;">
+    <div class="booking">
+      <div class="booking-inner">
+        <div class="section-head" style="margin-bottom:30px;">
+          <span class="eyebrow">Book appointment</span>
+          <h2 style="font-size:28px;">Find a time that works</h2>
+        </div>
+
+        <div class="book-steps-nav" id="stepsNav">
+          <button class="bstep" data-step="1"><span class="n">01</span><span class="t">Service</span></button>
+          <button class="bstep" data-step="2"><span class="n">02</span><span class="t">Dentist</span></button>
+          <button class="bstep" data-step="3"><span class="n">03</span><span class="t">Date &amp; time</span></button>
+          <button class="bstep" data-step="4"><span class="n">04</span><span class="t">Your details</span></button>
+          <button class="bstep" data-step="5"><span class="n">05</span><span class="t">Review</span></button>
+        </div>
+
+        <!-- STEP 1 -->
+        <div class="bpanel" data-panel="1">
+          <div class="pick-grid" id="serviceChoices"></div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="bpanel" data-panel="2">
+          <div class="dentist-grid" id="dentistChoices"></div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="bpanel" data-panel="3">
+          <p style="font-size:13px; font-weight:600; color:var(--ink-soft); margin-bottom:10px;">Select a date</p>
+          <div class="date-strip" id="dateStrip"></div>
+          <p style="font-size:13px; font-weight:600; color:var(--ink-soft); margin:24px 0 4px;">Select a time</p>
+          <div class="time-grid" id="timeGrid"></div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="bpanel" data-panel="4">
+          <div class="field-group">
+            <div class="field"><label for="fname">Full name</label><input id="fname" type="text" placeholder="e.g. Ananya Rao"></div>
+            <div class="field"><label for="fphone">Phone number</label><input id="fphone" type="tel" placeholder="+91 98xxxxxx"></div>
+          </div>
+          <div class="field"><label for="femail">Email (optional)</label><input id="femail" type="email" placeholder="you@example.com"></div>
+          <div class="field"><label for="fnote">Anything we should know?</label><textarea id="fnote" placeholder="e.g. sensitive teeth, prefer morning slots..."></textarea></div>
+        </div>
+
+        <!-- STEP 5 -->
+        <div class="bpanel" data-panel="5">
+          <div class="review-card" id="reviewCard"></div>
+        </div>
+
+        <!-- CONFIRMATION -->
+        <div class="bpanel" data-panel="confirm">
+          <div class="confirm-wrap">
+            <span class="eyebrow" style="justify-content:center;">You're booked</span>
+            <h2 style="font-size:26px;">See you soon.</h2>
+            <div class="ticket" id="ticketCard"></div>
+            <div style="margin-top:22px;">
+              <button class="btn btn-ghost" id="bookAnother">Book another visit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="book-actions" id="bookActions">
+          <button class="btn btn-ghost" id="backBtn">Back</button>
+          <button class="btn btn-primary" id="nextBtn">Continue</button>
+        </div>
+
+        <div class="my-appts">
+          <h3>Your upcoming appointments</h3>
+          <div id="apptList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">The team</span>
+        <h2>Four dentists, zero lectures about flossing you didn't ask for.</h2>
+      </div>
+      <div class="team-grid" id="teamGrid"></div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="reviews">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Reviews</span>
+        <h2>What recent visits sounded like</h2>
+      </div>
+      <div class="testi-grid" id="testiGrid"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <span class="eyebrow">Visit us</span>
+        <h2 style="font-size:30px;">Find the studio</h2>
+        <ul class="contact-list">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>14 Lakeview Cross Street, Chennai 600041</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 3a2 2 0 0 1-.4 2.1L8 10.3a16 16 0 0 0 6 6l1.5-1.5a2 2 0 0 1 2.1-.4c1 .4 2 .6 3 .7a2 2 0 0 1 1.7 2z"/></svg>
+            <span>+91 44 4000 1122</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>
+            <span>hello@cascadedental.example</span>
+          </li>
+        </ul>
+        <table class="hours-table">
+          <tr><td>Monday – Friday</td><td>9:00 AM – 6:30 PM</td></tr>
+          <tr><td>Saturday</td><td>9:00 AM – 3:00 PM</td></tr>
+          <tr><td>Sunday</td><td>Closed</td></tr>
+        </table>
+      </div>
+      <div class="map-card">
+        <svg viewBox="0 0 460 300" width="100%" height="auto">
+          <rect width="460" height="300" rx="14" fill="#EEF7F4"/>
+          <path d="M0 220 C 90 180, 160 240, 250 190 S 400 140, 460 180" stroke="#BFE3D9" stroke-width="18" fill="none"/>
+          <path d="M0 90 C 100 130, 180 60, 280 100 S 400 60, 460 90" stroke="#DCD5C7" stroke-width="10" fill="none"/>
+          <circle cx="230" cy="150" r="9" fill="#1F6F63"/>
+          <circle cx="230" cy="150" r="16" fill="#1F6F63" opacity=".2"/>
+          <text x="230" y="185" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="#123A34">Cascade Dental Studio</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <p class="mono">© 2026 Cascade Dental Studio — demo site, no real appointments are stored beyond this browser.</p>
+    <p>Built as a front-end booking demo.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---------- Data ----------
+  const SERVICES = [
+    {id:'checkup', name:'Check-up & clean', desc:'Full exam, polish, and a plan if anything needs attention.', duration:'45 min', icon:'tooth'},
+    {id:'whitening', name:'Whitening', desc:'In-studio brightening, several shades in one sitting.', duration:'60 min', icon:'sparkle'},
+    {id:'ortho', name:'Braces & aligners', desc:'Consultation and fitting for clear or traditional options.', duration:'40 min', icon:'brace'},
+    {id:'emergency', name:'Emergency visit', desc:'Sudden pain, chips, or swelling — same-day where possible.', duration:'30 min', icon:'shield'},
+    {id:'kids', name:'Kids dentistry', desc:'Gentle first visits and routine care for ages 3+.', duration:'30 min', icon:'family'},
+    {id:'implant', name:'Implants & crowns', desc:'Restorative work, from single crowns to full implants.', duration:'75 min', icon:'crown'}
+  ];
+  const ICONS = {
+    tooth:'<path d="M12 3c-2.2 0-3.6 1.3-5 1.3-1.3 0-2-.5-2 2 0 4.4 1.7 10.7 3.7 10.7 1.3 0 1.3-2.7 2.3-2.7 1 0 1 2.7 2.3 2.7 2.3 0 4-6.3 4-10.7 0-2.5-.9-2-2-2-1.6 0-2.4-1.3-3.3-1.3z"/>',
+    sparkle:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.8 2.8M15.2 15.2 18 18M18 6l-2.8 2.8M8.8 15.2 6 18"/>',
+    brace:'<path d="M4 9h16M4 15h16M6 9v6M10 9v6M14 9v6M18 9v6"/>',
+    shield:'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>',
+    family:'<circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="2.4"/><path d="M3 20c0-3 2.5-5 5-5s5 2 5 5M14.5 20c.2-2.4 1.9-4 3.8-4 2 0 3.7 1.7 3.7 4"/>',
+    crown:'<path d="M4 9l3 3 5-6 5 6 3-3-2 9H6z"/>'
+  };
+  const DENTISTS = [
+    {id:'any', name:'Any available', role:'First open slot', initials:'★', color:'#1F6F63'},
+    {id:'d1', name:'Dr. Meera Iyer', role:'General & cosmetic', initials:'MI', color:'#8FCABB'},
+    {id:'d2', name:'Dr. Arjun Nair', role:'Orthodontics', initials:'AN', color:'#E7B9AA'},
+    {id:'d3', name:'Dr. Priya Shah', role:'Pediatric care', initials:'PS', color:'#123A34'}
+  ];
+  const TEAM = [
+    {name:'Dr. Meera Iyer', role:'General & Cosmetic', initials:'MI', color:'#1F6F63', bio:'12 years in restorative and cosmetic dentistry.'},
+    {name:'Dr. Arjun Nair', role:'Orthodontics', initials:'AN', color:'#8FCABB', bio:'Focuses on clear-aligner and adolescent care.'},
+    {name:'Dr. Priya Shah', role:'Pediatric Dentistry', initials:'PS', color:'#E7B9AA', bio:'Makes first dental visits genuinely calm.'},
+    {name:'Dr. Karthik Rao', role:'Oral Surgery', initials:'KR', color:'#123A34', bio:'Implants, extractions, and complex restorations.'}
+  ];
+  const TESTIMONIALS = [
+    {quote:'Booked a slot the same afternoon and could see exactly which times were free — no calling around.', name:'Sandhya M.', tag:'Check-up & clean'},
+    {quote:'Dr. Nair explained the aligner timeline in plain terms before I committed to anything.', name:'Rahul K.', tag:'Braces & aligners'},
+    {quote:'Chipped a tooth on a Saturday and still got seen within the hour.', name:'Fatima A.', tag:'Emergency visit'}
+  ];
+
+  const svcGrid = document.getElementById('servicesGrid');
+  SERVICES.forEach(s=>{
+    svcGrid.insertAdjacentHTML('beforeend', `
+      <div class="svc-card">
+        <div class="svc-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[s.icon]}</svg></div>
+        <h3>${s.name}</h3>
+        <p>${s.desc}</p>
+        <div class="svc-meta">
+          <span class="mono">${s.duration}</span>
+          <button type="button" data-svc="${s.id}" class="jumpBook">Book this →</button>
+        </div>
+      </div>`);
+  });
+
+  const teamGrid = document.getElementById('teamGrid');
+  TEAM.forEach(t=>{
+    teamGrid.insertAdjacentHTML('beforeend', `
+      <div class="team-card">
+        <div class="team-avatar" style="background:${t.color}">${t.initials}</div>
+        <h3>${t.name}</h3>
+        <div class="role">${t.role}</div>
+        <p>${t.bio}</p>
+      </div>`);
+  });
+
+  const testiGrid = document.getElementById('testiGrid');
+  const starSvg = '<svg viewBox="0 0 20 20"><path d="M10 1l2.6 5.9 6.4.6-4.8 4.4 1.4 6.3L10 15l-5.6 3.2 1.4-6.3L1 7.5l6.4-.6z"/></svg>';
+  TESTIMONIALS.forEach(t=>{
+    testiGrid.insertAdjacentHTML('beforeend', `
+      <div class="testi-card">
+        <div class="stars">${starSvg.repeat(5)}</div>
+        <p class="quote">"${t.quote}"</p>
+        <div class="testi-who">
+          <div class="testi-avatar">${t.name.split(' ').map(w=>w[0]).join('')}</div>
+          <div><b>${t.name}</b><span>${t.tag}</span></div>
+        </div>
+      </div>`);
+  });
+
+  // ---------- Booking state ----------
+  const state = {step:1, service:null, dentist:null, date:null, time:null, name:'', phone:'', email:'', note:''};
+  const panels = document.querySelectorAll('.bpanel');
+  const stepBtns = document.querySelectorAll('.bstep');
+  const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
+  const bookActions = document.getElementById('bookActions');
+
+  function renderServiceChoices(){
+    const el = document.getElementById('serviceChoices');
+    el.innerHTML = SERVICES.map(s=>`
+      <button type="button" class="pick-card ${state.service===s.id?'selected':''}" data-service="${s.id}">
+        <h4>${s.name}</h4><p>${s.duration}</p>
+      </button>`).join('');
+    el.querySelectorAll('[data-service]').forEach(b=>b.addEventListener('click', ()=>{state.service=b.dataset.service; renderServiceChoices();}));
+  }
+
+  function renderDentistChoices(){
+    const el = document.getElementById('dentistChoices');
+    el.innerHTML = DENTISTS.map(d=>`
+      <button type="button" class="dent-card ${state.dentist===d.id?'selected':''}" data-dentist="${d.id}">
+        <div class="dent-avatar" style="background:${d.color}">${d.initials}</div>
+        <h4>${d.name}</h4><p>${d.role}</p>
+      </button>`).join('');
+    el.querySelectorAll('[data-dentist]').forEach(b=>b.addEventListener('click', ()=>{state.dentist=b.dataset.dentist; renderDentistChoices();}));
+  }
+
+  function seededRand(str){
+    let h = 0;
+    for(let i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; }
+    return function(){ h = (h*1103515245 + 12345) >>> 0; return (h % 1000)/1000; };
+  }
+
+  function nextDates(n){
+    const out = [];
+    let d = new Date();
+    while(out.length < n){
+      d = new Date(d.getTime() + 86400000);
+      if(d.getDay() !== 0) out.push(new Date(d));
+    }
+    return out;
+  }
+  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function renderDateStrip(){
+    const el = document.getElementById('dateStrip');
+    const dates = nextDates(12);
+    el.innerHTML = dates.map(d=>{
+      const key = d.toDateString();
+      return `<button type="button" class="date-chip ${state.date===key?'selected':''}" data-date="${key}">
+        <div class="dow">${DOW[d.getDay()]}</div><div class="dnum">${d.getDate()}</div><div class="mon">${MON[d.getMonth()]}</div>
+      </button>`;
+    }).join('');
+    el.querySelectorAll('[data-date]').forEach(b=>b.addEventListener('click', ()=>{
+      state.date = b.dataset.date; state.time = null; renderDateStrip(); renderTimeGrid();
+    }));
+  }
+
+  function renderTimeGrid(){
+    const el = document.getElementById('timeGrid');
+    if(!state.date){ el.innerHTML = '<p class="empty-note">Pick a date to see open times.</p>'; return; }
+    const times = [];
+    for(let h=9; h<=17; h++){ ['00','30'].forEach(m=>{ if(!(h===17 && m==='30')) times.push(`${h>12?h-12:h}:${m} ${h>=12?'PM':'AM'}`); }); }
+    const rand = seededRand(state.date + '_' + (state.dentist||''));
+    el.innerHTML = times.map(t=>{
+      const booked = rand() < 0.32;
+      return `<button type="button" class="time-chip ${state.time===t?'selected':''}" ${booked?'disabled':''} data-time="${t}">${t}</button>`;
+    }).join('');
+    el.querySelectorAll('[data-time]:not([disabled])').forEach(b=>b.addEventListener('click', ()=>{state.time=b.dataset.time; renderTimeGrid();}));
+  }
+
+  function renderReview(){
+    const svc = SERVICES.find(s=>s.id===state.service);
+    const den = DENTISTS.find(d=>d.id===state.dentist);
+    document.getElementById('reviewCard').innerHTML = `
+      <div class="review-row"><span class="k">Service</span><span class="v">${svc?svc.name:'—'}</span></div>
+      <div class="review-row"><span class="k">Dentist</span><span class="v">${den?den.name:'—'}</span></div>
+      <div class="review-row"><span class="k">Date</span><span class="v">${state.date||'—'}</span></div>
+      <div class="review-row"><span class="k">Time</span><span class="v">${state.time||'—'}</span></div>
+      <div class="review-row"><span class="k">Name</span><span class="v">${state.name||'—'}</span></div>
+      <div class="review-row"><span class="k">Phone</span><span class="v">${state.phone||'—'}</span></div>`;
+  }
+
+  function showPanel(step){
+    panels.forEach(p=>p.classList.toggle('active', p.dataset.panel == step));
+    stepBtns.forEach(b=>{
+      const n = Number(b.dataset.step);
+      b.classList.toggle('active', n === step);
+      b.classList.toggle('done', n < step);
+    });
+    bookActions.style.display = step === 'confirm' ? 'none' : 'flex';
+    backBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+    nextBtn.textContent = step === 5 ? 'Confirm booking' : 'Continue';
+  }
+
+  function validateStep(step){
+    if(step===1 && !state.service){ alert('Pick a service to continue.'); return false; }
+    if(step===2 && !state.dentist){ alert('Choose a dentist (or "Any available").'); return false; }
+    if(step===3 && (!state.date || !state.time)){ alert('Pick both a date and a time.'); return false; }
+    if(step===4){
+      state.name = document.getElementById('fname').value.trim();
+      state.phone = document.getElementById('fphone').value.trim();
+      state.email = document.getElementById('femail').value.trim();
+      state.note = document.getElementById('fnote').value.trim();
+      if(!state.name || !state.phone){ alert('Name and phone number are required.'); return false; }
+    }
+    return true;
+  }
+
+  function genRef(){
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let s = 'CDS-';
+    for(let i=0;i<6;i++) s += chars[Math.floor(Math.random()*chars.length)];
+    return s;
+  }
+
+  function loadAppts(){ try{ return JSON.parse(localStorage.getItem('cascade_bookings')||'[]'); }catch(e){ return []; } }
+  function saveAppts(list){ localStorage.setItem('cascade_bookings', JSON.stringify(list)); }
+
+  function renderApptList(){
+    const list = loadAppts();
+    const el = document.getElementById('apptList');
+    if(!list.length){ el.innerHTML = '<p class="empty-note">No appointments booked yet in this browser.</p>'; return; }
+    el.innerHTML = list.map(a=>`
+      <div class="appt-row" data-ref="${a.ref}">
+        <div class="left">
+          <span class="badge">${a.ref}</span>
+          <div class="info"><b>${a.serviceName} · ${a.dentistName}</b><span>${a.date} at ${a.time}</span></div>
+        </div>
+        <button type="button" class="cancel" data-cancel="${a.ref}">Cancel</button>
+      </div>`).join('');
+    el.querySelectorAll('[data-cancel]').forEach(b=>b.addEventListener('click', ()=>{
+      const remaining = loadAppts().filter(a=>a.ref !== b.dataset.cancel);
+      saveAppts(remaining); renderApptList();
+    }));
+  }
+
+  function confirmBooking(){
+    const svc = SERVICES.find(s=>s.id===state.service);
+    const den = DENTISTS.find(d=>d.id===state.dentist);
+    const ref = genRef();
+    const record = {ref, serviceName:svc.name, dentistName:den.name, date:state.date, time:state.time, name:state.name};
+    const list = loadAppts(); list.push(record); saveAppts(list);
+
+    document.getElementById('ticketCard').innerHTML = `
+      <div class="ref">REFERENCE</div>
+      <h3>${ref}</h3>
+      <div class="trow"><span class="k">Service</span><span>${svc.name}</span></div>
+      <div class="trow"><span class="k">Dentist</span><span>${den.name}</span></div>
+      <div class="trow"><span class="k">When</span><span>${state.date} · ${state.time}</span></div>
+      <div class="trow"><span class="k">Guest</span><span>${state.name}</span></div>`;
+    showPanel('confirm');
+    renderApptList();
+  }
+
+  nextBtn.addEventListener('click', ()=>{
+    if(!validateStep(state.step)) return;
+    if(state.step === 5){ confirmBooking(); return; }
+    state.step += 1;
+    if(state.step===5) renderReview();
+    showPanel(state.step);
+  });
+  backBtn.addEventListener('click', ()=>{
+    if(state.step===1) return;
+    state.step -= 1; showPanel(state.step);
+  });
+  stepBtns.forEach(b=>b.addEventListener('click', ()=>{
+    const n = Number(b.dataset.step);
+    if(n < state.step){ state.step = n; showPanel(n); }
+  }));
+  document.getElementById('bookAnother').addEventListener('click', ()=>{
+    state.step=1; state.service=null; state.dentist=null; state.date=null; state.time=null;
+    document.getElementById('fname').value=''; document.getElementById('fphone').value='';
+    document.getElementById('femail').value=''; document.getElementById('fnote').value='';
+    renderServiceChoices(); renderDentistChoices(); renderDateStrip(); renderTimeGrid();
+    showPanel(1);
+  });
+  document.querySelectorAll('.jumpBook').forEach(b=>b.addEventListener('click', ()=>{
+    state.service = b.dataset.svc; state.step = 1;
+    renderServiceChoices(); showPanel(1);
+    document.getElementById('book').scrollIntoView({behavior:'smooth'});
+  }));
+
+  renderServiceChoices();
+  renderDentistChoices();
+  renderDateStrip();
+  renderTimeGrid();
+  renderApptList();
+  showPanel(1);
+})();
+</script>
+</body>
+</html>
